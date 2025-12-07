@@ -5,6 +5,10 @@ const Index = () => {
 
   const handleClick = () => {
     setIsAnimating(true);
+    
+    const audio = new Audio('https://www.myinstants.com/media/sounds/fart-with-reverb.mp3');
+    audio.play();
+    
     setTimeout(() => setIsAnimating(false), 600);
   };
 
