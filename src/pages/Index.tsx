@@ -1,11 +1,26 @@
-// Update this page (the content is just a fallback if you fail to update the page)
-
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
+    <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#F97316] bg-[length:200%_200%] animate-gradient-shift">
+      <div className="absolute inset-0 bg-black/10"></div>
+      
+      <div className="relative z-10 text-center px-4 animate-fade-in">
+        <h1 className="text-7xl md:text-9xl lg:text-[12rem] font-black text-white tracking-tight leading-none">
+          Adobe
+          <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-yellow-200 to-white">
+            Meow
+          </span>
+        </h1>
+        
+        <div className="mt-8 flex items-center justify-center gap-2">
+          <div className="h-1 w-16 bg-white/80 rounded-full"></div>
+          <div className="h-1 w-8 bg-white/60 rounded-full"></div>
+          <div className="h-1 w-4 bg-white/40 rounded-full"></div>
+        </div>
+      </div>
+      
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 text-sm font-light tracking-widest">
+        MODERN DESIGN
       </div>
     </div>
   );
