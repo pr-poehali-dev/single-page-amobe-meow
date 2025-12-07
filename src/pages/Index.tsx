@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface EmojiEvent {
   id: number;
@@ -33,8 +33,8 @@ const Index = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [score, setScore] = useState(0);
   const [activeEmojis, setActiveEmojis] = useState<EmojiEvent[]>([]);
-  const [emojiIdCounter, setEmojiIdCounter] = useState(0);
-  const [lastMilestone, setLastMilestone] = useState(0);
+  const emojiIdCounterRef = useRef(0);
+  const lastMilestoneRef = useRef(0);
 
   const handleClick = () => {
     setIsAnimating(true);
@@ -49,29 +49,30 @@ const Index = () => {
   useEffect(() => {
     const currentMilestone = Math.floor(score / 15) * 15;
     
-    if (score > 0 && score % 15 === 0 && currentMilestone !== lastMilestone) {
+    if (score > 0 && score % 15 === 0 && currentMilestone !== lastMilestoneRef.current) {
       const randomEvent = EMOJI_EVENTS[Math.floor(Math.random() * EMOJI_EVENTS.length)];
       const randomPosition = Math.random() * 60 + 20;
       
+      const newEmojiId = emojiIdCounterRef.current;
       const newEmoji: EmojiEvent = {
-        id: emojiIdCounter,
+        id: newEmojiId,
         emoji: randomEvent.emoji,
         position: randomPosition,
       };
       
-      setEmojiIdCounter(prev => prev + 1);
+      emojiIdCounterRef.current += 1;
       setActiveEmojis(prev => [...prev, newEmoji]);
-      setLastMilestone(currentMilestone);
+      lastMilestoneRef.current = currentMilestone;
       
       const audio = new Audio(randomEvent.sound);
       audio.volume = 0.5;
       audio.play().catch(() => {});
       
       setTimeout(() => {
-        setActiveEmojis(prev => prev.filter(e => e.id !== newEmoji.id));
+        setActiveEmojis(prev => prev.filter(e => e.id !== newEmojiId));
       }, 3000);
     }
-  }, [score, emojiIdCounter, lastMilestone]);
+  }, [score]);
 
   return (
     <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#10b981] bg-[length:200%_200%] animate-gradient-shift">
