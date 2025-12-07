@@ -1,13 +1,25 @@
+import { useState } from 'react';
+
 const Index = () => {
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleClick = () => {
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 600);
+  };
+
   return (
-    <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#D946EF] to-[#F97316] bg-[length:200%_200%] animate-gradient-shift">
+    <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#10b981] bg-[length:200%_200%] animate-gradient-shift">
       <div className="absolute inset-0 bg-black/10"></div>
       
       <div className="relative z-10 text-center px-4 animate-fade-in">
-        <h1 className="text-7xl md:text-9xl lg:text-[12rem] font-black text-white tracking-tight leading-none">
-          Adobe
+        <h1 
+          className={`text-7xl md:text-9xl lg:text-[12rem] font-black text-white tracking-tight leading-none cursor-pointer select-none transition-transform ${isAnimating ? 'animate-bounce-text' : ''}`}
+          onClick={handleClick}
+        >
+          Abobe
           <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-yellow-200 to-white">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-green-200 to-white">
             Meow
           </span>
         </h1>
