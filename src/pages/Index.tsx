@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 
+const EVENTS = ['🐕', '🦄', '🐉', '🦖', '🚀', '🛸', '🐱', '🦊', '🐺', '🦁'];
+
 const Index = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [score, setScore] = useState(0);
-  const [showDog, setShowDog] = useState(false);
+  const [activeEmoji, setActiveEmoji] = useState<string | null>(null);
 
   const handleClick = () => {
     setIsAnimating(true);
@@ -16,11 +18,12 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (score === 15) {
-      setShowDog(true);
+    if (score > 0 && score % 15 === 0) {
+      const randomEmoji = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+      setActiveEmoji(randomEmoji);
+      
       setTimeout(() => {
-        setShowDog(false);
-        setScore(0);
+        setActiveEmoji(null);
       }, 3000);
     }
   }, [score]);
@@ -35,9 +38,9 @@ const Index = () => {
         </p>
       </div>
 
-      {showDog && (
+      {activeEmoji && (
         <div className="absolute bottom-20 text-9xl animate-dog-run z-30">
-          🐕
+          {activeEmoji}
         </div>
       )}
       
