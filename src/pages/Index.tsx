@@ -6,28 +6,7 @@ interface EmojiEvent {
   position: number;
 }
 
-const EMOJI_EVENTS = [
-  { emoji: '🐕', sound: 'https://cdn.freesound.org/previews/419/419509_7447151-lq.mp3' },
-  { emoji: '🦄', sound: 'https://cdn.freesound.org/previews/387/387232_6971891-lq.mp3' },
-  { emoji: '🐉', sound: 'https://cdn.freesound.org/previews/442/442774_3248244-lq.mp3' },
-  { emoji: '🦖', sound: 'https://cdn.freesound.org/previews/344/344687_5858296-lq.mp3' },
-  { emoji: '🚀', sound: 'https://cdn.freesound.org/previews/346/346630_4539788-lq.mp3' },
-  { emoji: '🛸', sound: 'https://cdn.freesound.org/previews/156/156859_2538033-lq.mp3' },
-  { emoji: '🐱', sound: 'https://cdn.freesound.org/previews/634/634803_10699318-lq.mp3' },
-  { emoji: '🦊', sound: 'https://cdn.freesound.org/previews/415/415643_5121236-lq.mp3' },
-  { emoji: '🐺', sound: 'https://cdn.freesound.org/previews/320/320873_527080-lq.mp3' },
-  { emoji: '🦁', sound: 'https://cdn.freesound.org/previews/546/546116_11861866-lq.mp3' },
-  { emoji: '🐒', sound: 'https://cdn.freesound.org/previews/178/178879_1015240-lq.mp3' },
-  { emoji: '🦅', sound: 'https://cdn.freesound.org/previews/415/415510_6263379-lq.mp3' },
-  { emoji: '🐘', sound: 'https://cdn.freesound.org/previews/391/391660_6885613-lq.mp3' },
-  { emoji: '🦈', sound: 'https://cdn.freesound.org/previews/521/521615_1523318-lq.mp3' },
-  { emoji: '🐧', sound: 'https://cdn.freesound.org/previews/408/408419_4019029-lq.mp3' },
-  { emoji: '🦇', sound: 'https://cdn.freesound.org/previews/345/345852_3905925-lq.mp3' },
-  { emoji: '🐍', sound: 'https://cdn.freesound.org/previews/352/352281_6189251-lq.mp3' },
-  { emoji: '🦋', sound: 'https://cdn.freesound.org/previews/387/387232_6971891-lq.mp3' },
-  { emoji: '🐢', sound: 'https://cdn.freesound.org/previews/424/424850_3976619-lq.mp3' },
-  { emoji: '🦑', sound: 'https://cdn.freesound.org/previews/521/521615_1523318-lq.mp3' },
-];
+const EMOJI_LIST = ['🐕', '🦄', '🐉', '🦖', '🚀', '🛸', '🐱', '🦊', '🐺', '🦁', '🐒', '🦅', '🐘', '🦈', '🐧', '🦇', '🐍', '🦋', '🐢', '🦑'];
 
 const Index = () => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -36,15 +15,21 @@ const Index = () => {
   const [showScreamer, setShowScreamer] = useState(false);
   const emojiIdCounterRef = useRef(0);
   const lastMilestoneRef = useRef(0);
-  const screamerTriggeredRef = useRef(false);
+  const lastScreamerRef = useRef(0);
+  const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleClick = () => {
+    if (showScreamer) return;
+    
     setIsAnimating(true);
     setScore(prev => prev + 1);
     
-    const audio = new Audio('https://www.myinstants.com/media/sounds/fart-with-reverb.mp3');
-    audio.volume = 0.35;
-    audio.play().catch(() => {});
+    if (!clickAudioRef.current) {
+      clickAudioRef.current = new Audio('https://www.myinstants.com/media/sounds/fart-with-reverb.mp3');
+      clickAudioRef.current.volume = 0.35;
+    }
+    clickAudioRef.current.currentTime = 0;
+    clickAudioRef.current.play().catch(() => {});
     
     setTimeout(() => setIsAnimating(false), 600);
   };
@@ -53,23 +38,19 @@ const Index = () => {
     const currentMilestone = Math.floor(score / 15) * 15;
     
     if (score > 0 && score % 15 === 0 && currentMilestone > lastMilestoneRef.current) {
-      const randomEvent = EMOJI_EVENTS[Math.floor(Math.random() * EMOJI_EVENTS.length)];
+      const randomEmoji = EMOJI_LIST[Math.floor(Math.random() * EMOJI_LIST.length)];
       const randomPosition = Math.random() * 60 + 20;
       
       const newEmojiId = emojiIdCounterRef.current;
       const newEmoji: EmojiEvent = {
         id: newEmojiId,
-        emoji: randomEvent.emoji,
+        emoji: randomEmoji,
         position: randomPosition,
       };
       
       emojiIdCounterRef.current += 1;
       setActiveEmojis(prev => [...prev, newEmoji]);
       lastMilestoneRef.current = currentMilestone;
-      
-      const audio = new Audio(randomEvent.sound);
-      audio.volume = 0.6;
-      audio.play().catch((err) => console.log('Audio play error:', err));
       
       setTimeout(() => {
         setActiveEmojis(prev => prev.filter(e => e.id !== newEmojiId));
@@ -78,11 +59,19 @@ const Index = () => {
   }, [score]);
 
   useEffect(() => {
-    if (score >= 150 && !screamerTriggeredRef.current) {
-      screamerTriggeredRef.current = true;
+    const currentScreamerMilestone = Math.floor(score / 150) * 150;
+    
+    if (score > 0 && score % 150 === 0 && currentScreamerMilestone > lastScreamerRef.current) {
+      lastScreamerRef.current = currentScreamerMilestone;
+      
+      if (clickAudioRef.current) {
+        clickAudioRef.current.pause();
+        clickAudioRef.current.currentTime = 0;
+      }
+      
       setShowScreamer(true);
       
-      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/scary-scream.mp3');
+      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/fnaf-scream.mp3');
       screamerAudio.volume = 1.0;
       screamerAudio.play().catch(() => {});
       
@@ -92,11 +81,11 @@ const Index = () => {
     }
   }, [score]);
 
-  const progressPercentage = Math.min((score / 150) * 100, 100);
+  const progressPercentage = ((score % 150) / 150) * 100;
 
   if (showScreamer) {
     return (
-      <div className="min-h-screen w-full fixed inset-0 z-50 animate-fade-in">
+      <div className="min-h-screen w-full fixed inset-0 z-50 animate-fade-in bg-black">
         <img 
           src="https://cdn.poehali.dev/files/1000023709.png" 
           alt="Screamer" 
@@ -113,7 +102,7 @@ const Index = () => {
       <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 animate-fade-in">
         <div className="bg-white/20 backdrop-blur-md px-6 py-3 rounded-full border-2 border-white/40">
           <p className="text-2xl font-bold text-white">
-            🎯 Очки: <span className="text-yellow-200">{score}</span> / 150
+            🎯 Очки: <span className="text-yellow-200">{score}</span>
           </p>
         </div>
         
