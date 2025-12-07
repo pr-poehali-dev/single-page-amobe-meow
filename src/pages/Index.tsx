@@ -34,6 +34,7 @@ const Index = () => {
   const [score, setScore] = useState(0);
   const [activeEmojis, setActiveEmojis] = useState<EmojiEvent[]>([]);
   const [emojiIdCounter, setEmojiIdCounter] = useState(0);
+  const [lastMilestone, setLastMilestone] = useState(0);
 
   const handleClick = () => {
     setIsAnimating(true);
@@ -46,7 +47,9 @@ const Index = () => {
   };
 
   useEffect(() => {
-    if (score > 0 && score % 15 === 0) {
+    const currentMilestone = Math.floor(score / 15) * 15;
+    
+    if (score > 0 && score % 15 === 0 && currentMilestone !== lastMilestone) {
       const randomEvent = EMOJI_EVENTS[Math.floor(Math.random() * EMOJI_EVENTS.length)];
       const randomPosition = Math.random() * 60 + 20;
       
@@ -58,6 +61,7 @@ const Index = () => {
       
       setEmojiIdCounter(prev => prev + 1);
       setActiveEmojis(prev => [...prev, newEmoji]);
+      setLastMilestone(currentMilestone);
       
       const audio = new Audio(randomEvent.sound);
       audio.volume = 0.5;
@@ -67,7 +71,7 @@ const Index = () => {
         setActiveEmojis(prev => prev.filter(e => e.id !== newEmoji.id));
       }, 3000);
     }
-  }, [score, emojiIdCounter]);
+  }, [score, emojiIdCounter, lastMilestone]);
 
   return (
     <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#10b981] bg-[length:200%_200%] animate-gradient-shift">
