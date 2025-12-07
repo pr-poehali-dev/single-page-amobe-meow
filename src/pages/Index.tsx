@@ -71,9 +71,13 @@ const Index = () => {
       
       setShowScreamer(true);
       
-      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/scary-scream.mp3');
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200, 100, 400, 100, 200]);
+      }
+      
+      const screamerAudio = new Audio('https://cdn.freesound.org/previews/415/415209_5121236-lq.mp3');
       screamerAudio.volume = 1.0;
-      screamerAudio.play().catch(err => console.log('Audio play error:', err));
+      screamerAudio.play().catch(() => {});
       
       setTimeout(() => {
         setShowScreamer(false);
