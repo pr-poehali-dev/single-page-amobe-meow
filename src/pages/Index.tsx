@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Index = () => {
   const [isAnimating, setIsAnimating] = useState(false);
+  const [score, setScore] = useState(0);
+  const [showDog, setShowDog] = useState(false);
 
   const handleClick = () => {
     setIsAnimating(true);
+    setScore(prev => prev + 1);
     
     const audio = new Audio('https://www.myinstants.com/media/sounds/fart-with-reverb.mp3');
     audio.play();
@@ -12,9 +15,31 @@ const Index = () => {
     setTimeout(() => setIsAnimating(false), 600);
   };
 
+  useEffect(() => {
+    if (score === 15) {
+      setShowDog(true);
+      setTimeout(() => {
+        setShowDog(false);
+        setScore(0);
+      }, 3000);
+    }
+  }, [score]);
+
   return (
     <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#10b981] bg-[length:200%_200%] animate-gradient-shift">
       <div className="absolute inset-0 bg-black/10"></div>
+      
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 bg-white/20 backdrop-blur-md px-6 py-3 rounded-full border-2 border-white/40 animate-fade-in">
+        <p className="text-2xl font-bold text-white">
+          🎯 Очки: <span className="text-yellow-200">{score}</span>
+        </p>
+      </div>
+
+      {showDog && (
+        <div className="absolute bottom-20 text-9xl animate-dog-run z-30">
+          🐕
+        </div>
+      )}
       
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
