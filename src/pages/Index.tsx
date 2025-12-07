@@ -69,15 +69,15 @@ const Index = () => {
         clickAudioRef.current.currentTime = 0;
       }
       
-      setShowScreamer(true);
+      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/monster-roar.mp3');
+      screamerAudio.volume = 1.0;
+      screamerAudio.play().catch(() => {});
       
       if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200, 100, 400, 100, 200]);
       }
       
-      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/woman-scream.mp3');
-      screamerAudio.volume = 1.0;
-      screamerAudio.play().catch(() => {});
+      setShowScreamer(true);
       
       setTimeout(() => {
         setShowScreamer(false);
