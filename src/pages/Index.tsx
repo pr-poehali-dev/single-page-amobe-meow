@@ -26,7 +26,7 @@ const Index = () => {
     
     if (!clickAudioRef.current) {
       clickAudioRef.current = new Audio('https://www.myinstants.com/media/sounds/fart-with-reverb.mp3');
-      clickAudioRef.current.volume = 0.35;
+      clickAudioRef.current.volume = 0.2;
     }
     clickAudioRef.current.currentTime = 0;
     clickAudioRef.current.play().catch(() => {});
@@ -71,9 +71,9 @@ const Index = () => {
       
       setShowScreamer(true);
       
-      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/fnaf-scream.mp3');
+      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/scary-scream.mp3');
       screamerAudio.volume = 1.0;
-      screamerAudio.play().catch(() => {});
+      screamerAudio.play().catch(err => console.log('Audio play error:', err));
       
       setTimeout(() => {
         setShowScreamer(false);
