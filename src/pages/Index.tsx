@@ -1,11 +1,39 @@
 import { useState, useEffect } from 'react';
 
-const EVENTS = ['🐕', '🦄', '🐉', '🦖', '🚀', '🛸', '🐱', '🦊', '🐺', '🦁'];
+interface EmojiEvent {
+  id: number;
+  emoji: string;
+  position: number;
+}
+
+const EMOJI_EVENTS = [
+  { emoji: '🐕', sound: 'https://www.myinstants.com/media/sounds/dog-bark.mp3' },
+  { emoji: '🦄', sound: 'https://www.myinstants.com/media/sounds/magic-spell.mp3' },
+  { emoji: '🐉', sound: 'https://www.myinstants.com/media/sounds/dragon-roar.mp3' },
+  { emoji: '🦖', sound: 'https://www.myinstants.com/media/sounds/dinosaur.mp3' },
+  { emoji: '🚀', sound: 'https://www.myinstants.com/media/sounds/rocket-launch.mp3' },
+  { emoji: '🛸', sound: 'https://www.myinstants.com/media/sounds/ufo-sound.mp3' },
+  { emoji: '🐱', sound: 'https://www.myinstants.com/media/sounds/meow.mp3' },
+  { emoji: '🦊', sound: 'https://www.myinstants.com/media/sounds/fox-sound.mp3' },
+  { emoji: '🐺', sound: 'https://www.myinstants.com/media/sounds/wolf-howl.mp3' },
+  { emoji: '🦁', sound: 'https://www.myinstants.com/media/sounds/lion-roar.mp3' },
+  { emoji: '🐒', sound: 'https://www.myinstants.com/media/sounds/monkey-sound.mp3' },
+  { emoji: '🦅', sound: 'https://www.myinstants.com/media/sounds/eagle-sound.mp3' },
+  { emoji: '🐘', sound: 'https://www.myinstants.com/media/sounds/elephant-sound.mp3' },
+  { emoji: '🦈', sound: 'https://www.myinstants.com/media/sounds/jaws-theme.mp3' },
+  { emoji: '🐧', sound: 'https://www.myinstants.com/media/sounds/penguin.mp3' },
+  { emoji: '🦇', sound: 'https://www.myinstants.com/media/sounds/bat-sound.mp3' },
+  { emoji: '🐍', sound: 'https://www.myinstants.com/media/sounds/snake-hiss.mp3' },
+  { emoji: '🦋', sound: 'https://www.myinstants.com/media/sounds/fairy-sound.mp3' },
+  { emoji: '🐢', sound: 'https://www.myinstants.com/media/sounds/turtle-sound.mp3' },
+  { emoji: '🦑', sound: 'https://www.myinstants.com/media/sounds/squid-sound.mp3' },
+];
 
 const Index = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [score, setScore] = useState(0);
-  const [activeEmoji, setActiveEmoji] = useState<string | null>(null);
+  const [activeEmojis, setActiveEmojis] = useState<EmojiEvent[]>([]);
+  const [emojiIdCounter, setEmojiIdCounter] = useState(0);
 
   const handleClick = () => {
     setIsAnimating(true);
@@ -19,14 +47,27 @@ const Index = () => {
 
   useEffect(() => {
     if (score > 0 && score % 15 === 0) {
-      const randomEmoji = EVENTS[Math.floor(Math.random() * EVENTS.length)];
-      setActiveEmoji(randomEmoji);
+      const randomEvent = EMOJI_EVENTS[Math.floor(Math.random() * EMOJI_EVENTS.length)];
+      const randomPosition = Math.random() * 60 + 20;
+      
+      const newEmoji: EmojiEvent = {
+        id: emojiIdCounter,
+        emoji: randomEvent.emoji,
+        position: randomPosition,
+      };
+      
+      setEmojiIdCounter(prev => prev + 1);
+      setActiveEmojis(prev => [...prev, newEmoji]);
+      
+      const audio = new Audio(randomEvent.sound);
+      audio.volume = 0.5;
+      audio.play().catch(() => {});
       
       setTimeout(() => {
-        setActiveEmoji(null);
+        setActiveEmojis(prev => prev.filter(e => e.id !== newEmoji.id));
       }, 3000);
     }
-  }, [score]);
+  }, [score, emojiIdCounter]);
 
   return (
     <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#10b981] bg-[length:200%_200%] animate-gradient-shift">
@@ -38,11 +79,15 @@ const Index = () => {
         </p>
       </div>
 
-      {activeEmoji && (
-        <div className="absolute bottom-20 text-9xl animate-dog-run z-30">
-          {activeEmoji}
+      {activeEmojis.map((emojiEvent) => (
+        <div 
+          key={emojiEvent.id}
+          className="absolute text-9xl animate-dog-run z-30"
+          style={{ bottom: `${emojiEvent.position}%` }}
+        >
+          {emojiEvent.emoji}
         </div>
-      )}
+      ))}
       
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl animate-float"></div>
