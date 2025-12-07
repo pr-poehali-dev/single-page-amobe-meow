@@ -75,8 +75,8 @@ const Index = () => {
         navigator.vibrate([200, 100, 200, 100, 400, 100, 200]);
       }
       
-      const screamerAudio = new Audio('https://cdn.freesound.org/previews/415/415209_5121236-lq.mp3');
-      screamerAudio.volume = 1.0;
+      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/foxy-scream.mp3');
+      screamerAudio.volume = 0.5;
       screamerAudio.play().catch(() => {});
       
       setTimeout(() => {
