@@ -69,7 +69,7 @@ const Index = () => {
         clickAudioRef.current.currentTime = 0;
       }
       
-      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/monster-roar.mp3');
+      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/woman-scream.mp3');
       screamerAudio.volume = 1.0;
       screamerAudio.play().catch(() => {});
       
@@ -89,7 +89,7 @@ const Index = () => {
 
   if (showScreamer) {
     return (
-      <div className="min-h-screen w-full fixed inset-0 z-50 animate-fade-in bg-black">
+      <div className="min-h-screen w-full fixed inset-0 z-50 bg-black">
         <img 
           src="https://cdn.poehali.dev/files/1000023709.png" 
           alt="Screamer" 
