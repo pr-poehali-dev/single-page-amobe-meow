@@ -33,15 +33,17 @@ const Index = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [score, setScore] = useState(0);
   const [activeEmojis, setActiveEmojis] = useState<EmojiEvent[]>([]);
+  const [showScreamer, setShowScreamer] = useState(false);
   const emojiIdCounterRef = useRef(0);
   const lastMilestoneRef = useRef(0);
+  const screamerTriggeredRef = useRef(false);
 
   const handleClick = () => {
     setIsAnimating(true);
     setScore(prev => prev + 1);
     
     const audio = new Audio('https://www.myinstants.com/media/sounds/fart-with-reverb.mp3');
-    audio.volume = 0.7;
+    audio.volume = 0.35;
     audio.play().catch(() => {});
     
     setTimeout(() => setIsAnimating(false), 600);
@@ -75,14 +77,54 @@ const Index = () => {
     }
   }, [score]);
 
+  useEffect(() => {
+    if (score >= 150 && !screamerTriggeredRef.current) {
+      screamerTriggeredRef.current = true;
+      setShowScreamer(true);
+      
+      const screamerAudio = new Audio('https://www.myinstants.com/media/sounds/scary-scream.mp3');
+      screamerAudio.volume = 1.0;
+      screamerAudio.play().catch(() => {});
+      
+      setTimeout(() => {
+        setShowScreamer(false);
+      }, 3000);
+    }
+  }, [score]);
+
+  const progressPercentage = Math.min((score / 150) * 100, 100);
+
+  if (showScreamer) {
+    return (
+      <div className="min-h-screen w-full fixed inset-0 z-50 animate-fade-in">
+        <img 
+          src="https://cdn.poehali.dev/files/1000023709.png" 
+          alt="Screamer" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen w-full overflow-hidden relative flex items-center justify-center bg-gradient-to-br from-[#9b87f5] via-[#7E69AB] to-[#10b981] bg-[length:200%_200%] animate-gradient-shift">
       <div className="absolute inset-0 bg-black/10"></div>
       
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 bg-white/20 backdrop-blur-md px-6 py-3 rounded-full border-2 border-white/40 animate-fade-in">
-        <p className="text-2xl font-bold text-white">
-          🎯 Очки: <span className="text-yellow-200">{score}</span>
-        </p>
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 animate-fade-in">
+        <div className="bg-white/20 backdrop-blur-md px-6 py-3 rounded-full border-2 border-white/40">
+          <p className="text-2xl font-bold text-white">
+            🎯 Очки: <span className="text-yellow-200">{score}</span> / 150
+          </p>
+        </div>
+        
+        <div className="mt-3 w-full bg-white/20 backdrop-blur-sm rounded-full h-4 border-2 border-white/40 overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 transition-all duration-300 ease-out"
+            style={{ width: `${progressPercentage}%` }}
+          >
+            <div className="h-full w-full animate-pulse bg-white/20"></div>
+          </div>
+        </div>
       </div>
 
       {activeEmojis.map((emojiEvent) => (
