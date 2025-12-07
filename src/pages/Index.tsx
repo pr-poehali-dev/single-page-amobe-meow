@@ -7,26 +7,26 @@ interface EmojiEvent {
 }
 
 const EMOJI_EVENTS = [
-  { emoji: '🐕', sound: 'https://www.myinstants.com/media/sounds/dog-bark.mp3' },
-  { emoji: '🦄', sound: 'https://www.myinstants.com/media/sounds/magic-spell.mp3' },
-  { emoji: '🐉', sound: 'https://www.myinstants.com/media/sounds/dragon-roar.mp3' },
-  { emoji: '🦖', sound: 'https://www.myinstants.com/media/sounds/dinosaur.mp3' },
-  { emoji: '🚀', sound: 'https://www.myinstants.com/media/sounds/rocket-launch.mp3' },
-  { emoji: '🛸', sound: 'https://www.myinstants.com/media/sounds/ufo-sound.mp3' },
-  { emoji: '🐱', sound: 'https://www.myinstants.com/media/sounds/meow.mp3' },
-  { emoji: '🦊', sound: 'https://www.myinstants.com/media/sounds/fox-sound.mp3' },
-  { emoji: '🐺', sound: 'https://www.myinstants.com/media/sounds/wolf-howl.mp3' },
-  { emoji: '🦁', sound: 'https://www.myinstants.com/media/sounds/lion-roar.mp3' },
-  { emoji: '🐒', sound: 'https://www.myinstants.com/media/sounds/monkey-sound.mp3' },
-  { emoji: '🦅', sound: 'https://www.myinstants.com/media/sounds/eagle-sound.mp3' },
-  { emoji: '🐘', sound: 'https://www.myinstants.com/media/sounds/elephant-sound.mp3' },
-  { emoji: '🦈', sound: 'https://www.myinstants.com/media/sounds/jaws-theme.mp3' },
-  { emoji: '🐧', sound: 'https://www.myinstants.com/media/sounds/penguin.mp3' },
-  { emoji: '🦇', sound: 'https://www.myinstants.com/media/sounds/bat-sound.mp3' },
-  { emoji: '🐍', sound: 'https://www.myinstants.com/media/sounds/snake-hiss.mp3' },
-  { emoji: '🦋', sound: 'https://www.myinstants.com/media/sounds/fairy-sound.mp3' },
-  { emoji: '🐢', sound: 'https://www.myinstants.com/media/sounds/turtle-sound.mp3' },
-  { emoji: '🦑', sound: 'https://www.myinstants.com/media/sounds/squid-sound.mp3' },
+  { emoji: '🐕', sound: 'https://cdn.freesound.org/previews/419/419509_7447151-lq.mp3' },
+  { emoji: '🦄', sound: 'https://cdn.freesound.org/previews/387/387232_6971891-lq.mp3' },
+  { emoji: '🐉', sound: 'https://cdn.freesound.org/previews/442/442774_3248244-lq.mp3' },
+  { emoji: '🦖', sound: 'https://cdn.freesound.org/previews/344/344687_5858296-lq.mp3' },
+  { emoji: '🚀', sound: 'https://cdn.freesound.org/previews/346/346630_4539788-lq.mp3' },
+  { emoji: '🛸', sound: 'https://cdn.freesound.org/previews/156/156859_2538033-lq.mp3' },
+  { emoji: '🐱', sound: 'https://cdn.freesound.org/previews/634/634803_10699318-lq.mp3' },
+  { emoji: '🦊', sound: 'https://cdn.freesound.org/previews/415/415643_5121236-lq.mp3' },
+  { emoji: '🐺', sound: 'https://cdn.freesound.org/previews/320/320873_527080-lq.mp3' },
+  { emoji: '🦁', sound: 'https://cdn.freesound.org/previews/546/546116_11861866-lq.mp3' },
+  { emoji: '🐒', sound: 'https://cdn.freesound.org/previews/178/178879_1015240-lq.mp3' },
+  { emoji: '🦅', sound: 'https://cdn.freesound.org/previews/415/415510_6263379-lq.mp3' },
+  { emoji: '🐘', sound: 'https://cdn.freesound.org/previews/391/391660_6885613-lq.mp3' },
+  { emoji: '🦈', sound: 'https://cdn.freesound.org/previews/521/521615_1523318-lq.mp3' },
+  { emoji: '🐧', sound: 'https://cdn.freesound.org/previews/408/408419_4019029-lq.mp3' },
+  { emoji: '🦇', sound: 'https://cdn.freesound.org/previews/345/345852_3905925-lq.mp3' },
+  { emoji: '🐍', sound: 'https://cdn.freesound.org/previews/352/352281_6189251-lq.mp3' },
+  { emoji: '🦋', sound: 'https://cdn.freesound.org/previews/387/387232_6971891-lq.mp3' },
+  { emoji: '🐢', sound: 'https://cdn.freesound.org/previews/424/424850_3976619-lq.mp3' },
+  { emoji: '🦑', sound: 'https://cdn.freesound.org/previews/521/521615_1523318-lq.mp3' },
 ];
 
 const Index = () => {
@@ -41,7 +41,8 @@ const Index = () => {
     setScore(prev => prev + 1);
     
     const audio = new Audio('https://www.myinstants.com/media/sounds/fart-with-reverb.mp3');
-    audio.play();
+    audio.volume = 0.7;
+    audio.play().catch(() => {});
     
     setTimeout(() => setIsAnimating(false), 600);
   };
@@ -49,7 +50,7 @@ const Index = () => {
   useEffect(() => {
     const currentMilestone = Math.floor(score / 15) * 15;
     
-    if (score > 0 && score % 15 === 0 && currentMilestone !== lastMilestoneRef.current) {
+    if (score > 0 && score % 15 === 0 && currentMilestone > lastMilestoneRef.current) {
       const randomEvent = EMOJI_EVENTS[Math.floor(Math.random() * EMOJI_EVENTS.length)];
       const randomPosition = Math.random() * 60 + 20;
       
@@ -65,8 +66,8 @@ const Index = () => {
       lastMilestoneRef.current = currentMilestone;
       
       const audio = new Audio(randomEvent.sound);
-      audio.volume = 0.5;
-      audio.play().catch(() => {});
+      audio.volume = 0.6;
+      audio.play().catch((err) => console.log('Audio play error:', err));
       
       setTimeout(() => {
         setActiveEmojis(prev => prev.filter(e => e.id !== newEmojiId));
